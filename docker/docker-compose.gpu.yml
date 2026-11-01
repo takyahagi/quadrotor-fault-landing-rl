@@ -1,0 +1,12 @@
+services:
+  train:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.gpu
+    image: quadrotor-fault-landing-rl:gpu
+    gpus: all
+    volumes:
+      - ..:/workspace
+    working_dir: /workspace
+    tty: true
+    stdin_open: true

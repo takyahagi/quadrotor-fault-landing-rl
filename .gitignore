@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Training / evaluation artifacts (transferred via scp, not git)
+logs/
+checkpoints/
+*.pt
+videos/
+out/
+*.mp4
+
+# colcon のビルド成果物 (C3、docker/Dockerfile.ros2 の entrypoint が起動時に作る)
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# GPU マシンで同期したコミットの記録 (同期用のスクリプトが書く)
+.synced_commit
+
+# Claude Code の環境固有の設定・skill (公開しない)
+CLAUDE.local.md
+.claude/

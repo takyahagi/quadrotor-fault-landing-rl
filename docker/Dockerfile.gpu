@@ -1,0 +1,27 @@
+FROM python:3.10-slim
+
+# System libs needed by Genesis (mesh processing, offscreen rendering, video export).
+# GPU はホストの NVIDIA ドライバ + nvidia-container-toolkit (docker run --gpus all) で渡す。
+# CUDA ランタイムは pip の torch wheel が同梱するので、nvidia/cuda ベースイメージは不要
+# (2026-10-16 に RTX 5090 で確認: 素の `pip install torch` が torch 2.14.1+cu130 を入れ、
+# そのまま GPU で動く)。
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential cmake git \
+    libgl1 libglx-mesa0 libegl1 libgles2 libosmesa6 \
+    libglib2.0-0 libsm6 libxext6 libxrender1 \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+COPY docker/requirements.txt /tmp/requirements.txt
+ENV PIP_DEFAULT_TIMEOUT=120 PIP_RETRIES=10
+# CPU 版 (docker/Dockerfile) との違いはここだけ: --extra-index-url の cpu 指定を外し、
+# デフォルトの GPU (CUDA 同梱) wheel を入れる。
+RUN pip install --no-cache-dir torch \
+    && pip install --no-cache-dir -r /tmp/requirements.txt
+
+COPY docker/entrypoint-gpu.sh /entrypoint-gpu.sh
+RUN chmod +x /entrypoint-gpu.sh
+ENTRYPOINT ["/entrypoint-gpu.sh"]
+CMD ["bash"]

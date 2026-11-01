@@ -1,0 +1,11 @@
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: quadrotor-fault-landing-rl:dev
+    volumes:
+      - ..:/workspace
+    working_dir: /workspace
+    tty: true
+    stdin_open: true

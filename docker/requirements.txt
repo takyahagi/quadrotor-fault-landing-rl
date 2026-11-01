@@ -1,0 +1,7 @@
+# torch is installed separately in the Dockerfile (CPU or GPU wheel depending on target)
+# バージョンは学習・評価に使ったものに固定 (2026-10-22 にイメージ内で確認。Genesis は API の変更が多い)
+genesis-world==1.4.4
+rsl-rl-lib==5.5.1
+tensorboard==2.21.0
+# Markdown → HTML。他の依存で既に入っていたもの
+markdown==3.10.3

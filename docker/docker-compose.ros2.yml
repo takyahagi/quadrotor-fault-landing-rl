@@ -1,0 +1,11 @@
+services:
+  ros2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.ros2
+    image: quadrotor-fault-landing-rl:ros2
+    volumes:
+      - ..:/workspace
+    working_dir: /workspace
+    tty: true
+    stdin_open: true

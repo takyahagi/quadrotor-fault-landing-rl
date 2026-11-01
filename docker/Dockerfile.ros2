@@ -1,0 +1,32 @@
+# C3: 学習したポリシーを ROS 2 ノードとして動かすデモ用。
+# ros2_ws/src/fdrone_bridge の 2 ノード (policy_node: 推論のみ、sim_bridge_node: Genesis を回す)
+# を 1 つのコンテナにまとめる。CPU のみ (学習は docker/Dockerfile.gpu の方)。
+FROM ros:humble-ros-base
+
+# sim_bridge_node が使う Genesis (mesh 処理・オフスクリーン描画) に必要なライブラリ
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip build-essential cmake git \
+    libgl1 libglx-mesa0 libegl1 libgles2 libosmesa6 \
+    libglib2.0-0 libsm6 libxext6 libxrender1 \
+    python3-colcon-common-extensions \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+COPY docker/requirements.txt /tmp/requirements.txt
+ENV PIP_DEFAULT_TIMEOUT=120 PIP_RETRIES=10
+# ros:humble-ros-base は apt の古い setuptools が入っていて、genesis-world の依存
+# (pygltflib など) の sdist ビルドが `canonicalize_version() got an unexpected
+# keyword argument 'strip_trailing_zero'` で失敗する。先に更新する
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir torch --extra-index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r /tmp/requirements.txt
+
+ENV PYTHONPATH=/workspace/src:$PYTHONPATH
+
+# ROS 2 ワークスペースは起動時にビルドする (docker-compose.ros2.yml が ..:/workspace を
+# bind mount するので、fdrone_bridge の編集を colcon build し直すだけで反映できる)
+COPY docker/entrypoint-ros2.sh /entrypoint-ros2.sh
+RUN chmod +x /entrypoint-ros2.sh
+ENTRYPOINT ["/entrypoint-ros2.sh"]
+CMD ["bash"]

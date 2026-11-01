@@ -1,0 +1,97 @@
+<?xml version="1.0" ?>
+<!--
+  AscTec Pelican 相当の機体 (2026-10-27)。
+  値は RotorS (ETH Zurich、Apache-2.0、Furrer et al. 2016) の pelican.xacro の公開パラメータ:
+    質量 1.0 kg (本体。ロータ 4 × 0.01 kg は含めない)、慣性 ixx=iyy=0.01、izz=0.02 kg·m²、アーム長 0.21 m、
+    motor_constant 9.9865e-6 N/(rad/s)²、moment_constant 0.016 m、プロペラ半径 0.128 m
+  Genesis は回転数 [rpm] で推力 = kf · rpm² とするので、kf = 9.9865e-6 × (2π/60)² = 1.0951e-7、
+  km = 0.016 × kf = 1.7522e-9 に換算した。
+  + 配置: 0 番 前 (+x)、1 番 左 (+y)、2 番 後 (−x)、3 番 右 (−y)。RotorS では 前・後が CW、左・右が CCW で、
+  Genesis の既定の回転方向 (−1, 1, −1, 1) (−1: CW) と一致する。
+  見た目のメッシュは無い (衝突判定用の円柱だけ)。
+-->
+<robot name="pelican">
+
+  <properties arm="0.21" kf="1.0951e-7" km="1.7522e-9" thrust2weight="2.86" max_speed_kmh="50" gnd_eff_coeff="11.36859" prop_radius="0.128" drag_coeff_xy="8.06428e-5" drag_coeff_z="8.06428e-5" dw_coeff_1="2267.18" dw_coeff_2=".16" dw_coeff_3="-.11" />
+
+  <link name="base_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.02"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.1"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.1" length="0.1"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="prop0_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.21 0 0"/>
+      <mass value="0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="prop0_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="prop0_link"/>
+  </joint>
+
+  <link name="prop1_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0.21 0"/>
+      <mass value="0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="prop1_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="prop1_link"/>
+  </joint>
+
+  <link name="prop2_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.21 0 0"/>
+      <mass value="0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="prop2_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="prop2_link"/>
+  </joint>
+
+  <link name="prop3_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.21 0"/>
+      <mass value="0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="prop3_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="prop3_link"/>
+  </joint>
+
+  <link name="center_of_mass_link">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="center_of_mass_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="center_of_mass_link"/>
+  </joint>
+
+</robot>

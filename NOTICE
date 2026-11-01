@@ -1,0 +1,21 @@
+quadrotor-fault-landing-rl
+Copyright 2026 takyahagi
+
+This project is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This project includes code derived from Genesis
+(https://github.com/Genesis-Embodied-AI/Genesis), licensed under the Apache License 2.0:
+
+  examples/drone/hover_env.py              -> src/fdrone/envs/fault_land_env.py, src/fdrone/envs/drone_scene.py
+  examples/drone/hover_train.py            -> scripts/train.py
+  examples/drone/hover_eval.py             -> scripts/eval.py
+  examples/drone/quadcopter_controller.py  -> src/fdrone/controllers/pid.py
+
+Each of these files states in its header docstring that it is derived from the Genesis example
+and describes what was changed.
+
+assets/urdf/pelican.urdf was written from the AscTec Pelican parameters published in
+RotorS (ETH Zurich, https://github.com/ethz-asl/rotors_simulator), licensed under the Apache License 2.0.
+
+At run time this project uses Genesis's bundled drone models (cf2x.urdf, racer.urdf and their meshes;
+racer.urdf originates from gym-pybullet-drones, MIT License). They are not redistributed here.
